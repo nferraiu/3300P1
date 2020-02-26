@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+    </head>
+    <body>
+        <svg width="400" height="400" id="visualization3"></svg>
+        <script>
+            vis3 = d3.select("svg#visualization3");
+            d3.csv("BetterLifeIndex.csv").then(function(data) {
+                life_satisfaction = [];
+                household_net_wealth = [];
+                data.forEach(element => {
+                    if (element["Indicator"] == "Life satisfaction") {
+                        life_satisfaction.push(element);
+                    } 
+                    if (element["Indicator"] == "Household net wealth") {
+                        household_net_wealth.push(element);
+                    }
+                });
+            });
+
+        </script>
+
+    </body>
+</html>
