@@ -1,0 +1,340 @@
+<html><body>
+  <head>
+    <h3>Dylan Lee, dl655</h3>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+  </head>
+  <p id="graph1">
+  <script>
+
+    d3.csv("betterlifeindex.csv").then(function(data) {
+      var lifeSatisfaction = [];
+      for (var i = 0; i < data.length ; i++) {
+        if (data[i].Indicator == "Life satisfaction") {
+          if (data[i].Inequality == "Total") {
+            if (data[i].Country != "OECD - Total") {
+              lifeSatisfaction.push([data[i].Country, data[i].Value]);
+            }
+          }
+        }
+      }
+
+      var lifeSatisfactionSorted = [["Dummy", 0]];
+      for (var i = 0; i < lifeSatisfaction.length; i++) {
+        var lifeSatisfactionPair = lifeSatisfaction[i];
+        var done = false;
+        var index = 0;
+        while (done == false) {
+          if (index == lifeSatisfactionSorted.length) {
+            lifeSatisfactionSorted.push(lifeSatisfactionPair);
+            done = true;
+          }
+          else {
+            if (parseFloat(lifeSatisfactionPair[1]) > lifeSatisfactionSorted[index][1]) {
+              index +=1;
+            }
+            else {
+              lifeSatisfactionSorted.splice(index, 0, lifeSatisfactionPair);
+              done = true;
+            }
+          }
+        }
+      }
+
+      lifeSatisfactionSorted.reverse();
+      lifeSatisfactionSorted.pop();
+
+      var svg = d3.select("body")
+                  .append("svg")
+                  .attr("width", 700)
+                  .attr("height", 1200)
+
+      const xScale = d3.scaleLinear()
+        .domain([4, 8])
+        .range([0, 500]);
+
+      const yScaleAxis = d3.scaleLinear()
+          .domain([4, 8])
+          .range([600,100]);
+
+      const yScale = d3.scaleLinear()
+          .domain([4, 8])
+          .range([0,1000]);
+
+      var axisBottom = d3.axisBottom()
+                         .ticks(5)
+                         .tickSize(10)
+                         .scale(xScale);
+
+      svg.append("g")
+        .style("font", "15px times")
+        .attr("transform", "translate(50,1050)")
+        .call(axisBottom);
+
+      var axisLeft = d3.axisLeft()
+                       .ticks(0)
+                       .tickSize(0)
+                       .scale(yScale);
+
+      svg.append("g")
+         .attr("transform", "translate(50,50)")
+         .call(axisLeft);
+
+
+      console.log(lifeSatisfactionSorted);
+
+      for (var i = 0; i < lifeSatisfactionSorted.length; i++) {
+       var rect = svg.append("rect")
+                       .attr("width",xScale(lifeSatisfactionSorted[i][1]))
+                       .attr("height", 15)
+                       .attr("style","fill:darkcyan;")
+                       .attr("opacity",0.5)
+                       .attr("x", 50)
+                       .attr("y", 55+(i * 15) + (i*10));
+
+       var country = svg.append("text")
+                       .attr("x", 53)
+                       .attr("y", 67+(i * 15) + (i*10))
+                       .attr("font-family", "sans-serif")
+                       .attr("font-size", "12px")
+                       .attr("font-weight", "semi-bold")
+                       .text(lifeSatisfactionSorted[i][0]);
+
+       var points = svg.append("text")
+                       .attr("x", 52+xScale(lifeSatisfactionSorted[i][1]))
+                       .attr("y", 67+(i * 15) + (i*10))
+                       .attr("font-family", "sans-serif")
+                       .attr("font-size", "12px")
+                       .attr("font-weight", "semi-bold")
+                       .text(lifeSatisfactionSorted[i][1]);
+      };
+
+      var xAxisLabel = svg.append("text")
+                      .attr("x", 160)
+                      .attr("y", 1090)
+                      .attr("dy",".75em")
+                      .attr("font-family", "sans-serif")
+                      .attr("font-size", "20px")
+                      .attr("font-weight", "semi-bold")
+                      .text("Average Life Satisfaction Score");
+
+      var yAxisLabel = svg.append("text")
+                      .attr("text-anchor", "end")
+                      .attr("x", -520)
+                      .attr("y", 15)
+                      .attr("dy",".75em")
+                      .attr("transform", "rotate(-90)")
+                      .attr("font-family", "sans-serif")
+                      .attr("font-size", "20px")
+                      .attr("font-weight", "semi-bold")
+                      .text("Country");
+
+      var title = svg.append("text")
+                      .attr("x", 65)
+                      .attr("y", 30)
+                      .attr("font-family", "sans-serif")
+                      .attr("font-size", "20px")
+                      .attr("font-weight", "semi-bold")
+                      .text("Average Life Satisfaction Scores in Various Countries");
+
+    });
+
+  </script>
+  </p>
+  <p id="graph2">
+    <script>
+      d3.csv("wagegap.csv", function(d) {
+        return {
+          indicator : d.Indicator,
+          sex : d.Sex,
+          country : d.Country,
+          age_group : d["Age Group"],
+          value : d.Value,
+          time : d.Time
+        };
+      }).then(function(data) {
+        var wageGap = [];
+        for (var i = 0; i < data.length ; i++) {
+          if (data[i].indicator == "Gender wage gap") {
+            if (data[i].sex == "All persons") {
+              if (data[i].country != "OECD - Average") {
+                if (data[i].age_group == "Total") {
+                  if (data[i].time == "2017") {
+                    wageGap.push([data[i].country, data[i].value]);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+
+        d3.csv("income.csv", function(c) {
+          return {
+            country : c.Country,
+            measure : c.Measure,
+            methodology : c.Methodology,
+            age_group : c["Age group"],
+            unit : c.Unit,
+            value : c.Value,
+            year : c.Year
+          }
+        }).then(function(data2) {
+          var income = [];
+          for (var j = 0; j < data2.length; j++) {
+            if (data2[j].age_group == "Total population") {
+              if (data2[j].measure == "Total earnings (current prices)") {
+                if (data2[j].methodology == "New income definition since 2012") {
+                  if (data2[j].year == "2017") {
+                    income.push([data2[j].country, data2[j].value, data2[j].unit]);
+                  }
+                }
+              }
+            }
+          }
+
+          final = [];
+
+          currencies = {"Canadian Dollar" : 1.34, "Czech Koruna" : 23.04, "Won" : 1200.32, "Pound Sterling" : 0.78, "US Dollar" : 1, "Costa Rican Colon": 569.62, "Euro" : .9, "Swedish Krona" : 9.63, "Chilean Peso" : 817.9, "New Israeli Sheqel": 3.49};
+
+          for (var i = 0; i < wageGap.length; i++) {
+            for (var j = 0; j < income.length; j++) {
+              if (wageGap[i][0] == income[j][0]) {
+                var countryLabel = wageGap[i][0];
+                var countryWageGap = wageGap[i][1];
+                var ogIncome = income[j][1];
+                var adjIncome = ogIncome / currencies[income[j][2]];
+                var incomeM = adjIncome + (adjIncome * .01 * countryWageGap)
+                var incomeF = adjIncome - (adjIncome * .01 * countryWageGap)
+                final.push([countryLabel, incomeM, incomeF, countryWageGap, income[j][2]]);
+              }
+            }
+          }
+
+          var svg2 = d3.select("body")
+                      .append("svg")
+                      .attr("width", 1500)
+                      .attr("height", 700)
+
+          const xScale2 = d3.scaleLinear()
+            .domain([0, 1220])
+            .range([0, 1220]);
+
+          const yScale2 = d3.scaleLinear()
+              .domain([0, 60000])
+              .range([0,500]);
+
+          const yScaleAxis = d3.scaleLinear()
+              .domain([60000, 0])
+              .range([0,500]);
+
+          var axisBottom = d3.axisBottom()
+                             .ticks(0)
+                             .tickSize(0)
+                             .scale(xScale2);
+
+          svg2.append("g")
+            .attr("transform", "translate(100,550)")
+            .call(axisBottom);
+
+          var axisLeft = d3.axisLeft()
+                           .ticks(5)
+                           .tickSize(10)
+                           .scale(yScaleAxis);
+
+          svg2.append("g")
+             .style("font", "15px times")
+             .attr("transform", "translate(100,50)")
+             .call(axisLeft);
+
+
+          for (var i = 0; i < final.length; i++) {
+            var rectF = svg2.append("rect")
+                            .attr("width",30)
+                            .attr("height", yScale2(final[i][1]))
+                            .attr("style",'fill:CornflowerBlue')
+                            .attr("x", 120 + (i * 60) + (i * 20))
+                            .attr("y",550 - yScale2(final[i][1]));
+
+            var rectM = svg2.append("rect")
+                            .attr("width",30)
+                            .attr("height", yScale2(final[i][2]))
+                            .attr("style",'fill:pink')
+                            .attr("x", 150 + (i * 60) + (i * 20))
+                            .attr("y",550 - yScale2(final[i][2]));
+
+
+            var countryLabels = final[i][0].split(" ");
+            console.log(countryLabels);
+            for (var j = 0; j < countryLabels.length; j++) {
+              var country = svg2.append("text")
+                              .attr("text-anchor", "middle")
+                              .attr("x", 150 + i *60 + i*20)
+                              .attr("y", 570 + j* 20)
+                              .attr("font-family", "sans-serif")
+                              .attr("font-size", "17px")
+                              .attr("font-weight", "semi-bold")
+                              .text(countryLabels[j]);
+            }
+          }
+
+          var xAxisLabel2 = svg2.append("text")
+                          .attr("x", 650)
+                          .attr("y", 630)
+                          .attr("font-family", "sans-serif")
+                          .attr("font-size", "20px")
+                          .attr("font-weight", "semi-bold")
+                          .text("Country");
+
+          var yAxisLabel2 = svg2.append("text")
+                          .attr("text-anchor", "end")
+                          .attr("x", -130)
+                          .attr("y", 5)
+                          .attr("dy",".75em")
+                          .attr("transform", "rotate(-90)")
+                          .attr("font-family", "sans-serif")
+                          .attr("font-size", "20px")
+                          .attr("font-weight", "semi-bold")
+                          .text("Average Annual Income (U.S. Dollars)");
+
+          var title2 = svg2.append("text")
+                          .attr("x", 370)
+                          .attr("y", 20)
+                          .attr("font-family", "sans-serif")
+                          .attr("font-size", "22px")
+                          .attr("font-weight", "semi-bold")
+                          .text("Average Annual Income of Men and Women in Various Countries");
+
+          var legM = svg2.append("rect")
+                          .attr("width",30)
+                          .attr("height", 30)
+                          .attr("style",'fill:CornflowerBlue')
+                          .attr("x", 1100)
+                          .attr("y",70);
+          var legF = svg2.append("rect")
+                          .attr("width",30)
+                          .attr("height", 30)
+                          .attr("style",'fill:pink')
+                          .attr("x", 1100)
+                          .attr("y",120);
+
+          var labelM = svg2.append("text")
+                          .attr("x", 1140)
+                          .attr("y", 91)
+                          .attr("font-family", "sans-serif")
+                          .attr("font-size", "20px")
+                          .attr("font-weight", "semi-bold")
+                          .text("Men");
+
+          var labelF = svg2.append("text")
+                          .attr("x", 1140)
+                          .attr("y", 141)
+                          .attr("font-family", "sans-serif")
+                          .attr("font-size", "20px")
+                          .attr("font-weight", "semi-bold")
+                          .text("Women");
+
+        });
+      });
+    </script>
+  </p>
+</body></html>

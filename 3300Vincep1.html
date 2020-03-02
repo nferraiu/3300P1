@@ -1,0 +1,293 @@
+<html>
+    <head><script src="https://d3js.org/d3.v5.min.js"></script></head>
+    <meta charset="UTF-8">
+    <body >
+        <svg height = "800" width = "1500" id = scatterplot>
+            <text id = "label" x = 775 y ="15" text-anchor = "end"></text>
+        </svg>
+        <div id="scatterplotLeg"></div>
+        <script>
+            
+            //Data loading
+            d3.csv("3300p1.csv").then( (data) =>{
+                console.log(data)
+                var svg = d3.select("svg#scatterplot");
+                var width = svg.attr("width");
+                var height = svg.attr("height");
+                var margins = {top:50, right:50, bottom:50, left:100};
+                var cwidth = width - margins.left - margins.right;
+                var cheight = height - margins.top - margins.bottom;
+
+                //Filtered out x-outlier and size outlier to prevent scaling issue
+                data = data.filter( (d) => {return d['PC'] < 12 && d['LEIS'] > 3});
+
+                //x-axis scale
+                let xScale = d3.scaleLinear()
+                    .domain([10,12]) 
+                    .range([10, width-400])
+                
+                //y-axis scale
+                let yScale = d3.scaleLinear()
+                    .domain([4.5,8])
+                    .range([height-100,20])
+
+                //x-axis ticks
+                let x_axis = d3.axisBottom(xScale)
+                    .ticks(13)
+                    .tickSize(5)
+
+                //y-axis ticks
+                let y_axis = d3.axisLeft(yScale)
+                    .ticks(10)
+                    .tickSize(5)
+                
+                //Plot y-axis onto canvas
+                svg.append("g")
+                     .attr("class", "y_axis")
+                     .style("font-size", "15")
+                     .attr("transform","translate("+(margins.left)+","+(margins.top)+")")
+                     .call(y_axis); 
+                
+                //Plot x-axis onto canvas
+                svg.append("g")
+                     .attr("class", "x_axis")
+                     .style("font-size", "15")
+                     .attr("transform","translate("+(margins.left)+","+(margins.top+700)+")")
+                     .call(x_axis);
+
+                //Create scatterplot canvas
+                let scatterplot = svg.append("g")
+                    .attr("transform","translate("+(margins.left)+","+(margins.top)+")");
+
+                //Function to determine color of country based off of total work hours
+                function colorw(workhrs){
+                    if(workhrs < 7){
+                        return "green"
+                    }
+                    else if(workhrs < 7.75){
+                        return "yellow"
+                    }
+                    else if(workhrs < 8.5){
+                        return "orange"
+                    }
+                    else{
+                        return "red"
+                    }
+                }
+                
+                var USdis = 45284; 
+
+                function diswealth(wealth){
+                    return wealth/USdis
+                }
+                    //Plots circles onto scatterplot
+                    let points = scatterplot.selectAll("circle").data(data)
+                        .join("circle")
+                        .attr("cx", d => xScale(d['PC']))
+                        .attr("cy", d => yScale(d['LS']))
+                        .attr("r", d => (d['LEIS'] - 3) * 14)
+                        .style("fill", d => colorw((d['TWS'])))
+                        .attr("opacity", d => diswealth(d['Household net adjusted disposable income']))
+                        .append("text", d => d['Country'])
+                    
+                    //Label each point with associated country
+                    data.forEach((elem, i) => {
+                        scatterplot.append("text")
+                        .attr("x", xScale(elem.PC))
+                        .attr("y", yScale(elem.LS)+3)
+                        .style("text-anchor", "middle")
+                        .text(elem.Country)
+                        })
+                    
+                    //y-axis label
+                    scatterplot.append("text")
+                        .attr("transform", "translate(-40,360)rotate(-90)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 20)
+                        .attr("font-weight", "bold")
+                        .text("Life Satisfaction Score");
+
+                    //x-axis label
+                    scatterplot.append("text")
+                        .attr("transform", "translate(525,740)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 20)
+                        .attr("font-weight", "bold")
+                        .text("Personal Care (Hours)");
+
+                    //Title
+                    scatterplot.append("text")
+                        .attr("transform", "translate(530,10)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 28)
+                        .attr("font-weight", "bold")
+                        .text("Personal Care vs. Life Satisfaction by Country");
+
+                    //Legend Border Edge 1
+                    scatterplot.append("line")
+                        .attr("x1", "120")
+                        .attr("x2", "120")
+                        .attr("y1","470")
+                        .attr("y2", "650")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+
+                    //Legend Border Edge 2
+                    scatterplot.append("line")
+                        .attr("x1", "120")
+                        .attr("x2", "370")
+                        .attr("y1","470")
+                        .attr("y2", "470")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+                    
+                    //Legend Border Edge 3
+                    scatterplot.append("line")
+                        .attr("x1", "370")
+                        .attr("x2", "370")
+                        .attr("y1","470")
+                        .attr("y2", "650")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+                    
+                    //Legend Border Edge 4
+                    scatterplot.append("line")
+                        .attr("x1", "120")
+                        .attr("x2", "370")
+                        .attr("y1","650")
+                        .attr("y2", "650")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+                    
+                    //Legend Label
+                    scatterplot.append("text")
+                        .attr("transform", "translate(246,495)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 20)
+                        .attr("font-weight", "bold")
+                        .text("Legend");
+                    
+                    //Attribute Label: Disposable Income
+                    scatterplot.append("text")
+                        .attr("transform", "translate(242,524)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 18)
+                        .text("Opacity: Disposable Income");
+                    
+                    //Attribute Label: Leisure Time
+                    scatterplot.append("text")
+                        .attr("transform", "translate(240,552)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 18)
+                        .text("Size: Leisure Time");
+
+                    //Attribute Label: Work Hours
+                    scatterplot.append("text")
+                        .attr("transform", "translate(240,580)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 18)
+                        .text("Color: Work Hours");
+                    
+                    //Attribute Label: Work Hours - Measure
+                    scatterplot.append("text")
+                        .attr("transform", "translate(188,604)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 14)
+                        .text("= < 7 hours");
+
+                    //Attribute Label: Work Hours - Measure
+                    scatterplot.append("text")
+                        .attr("transform", "translate(197,634)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 14)
+                        .text("= < 7.75 hours");
+                    
+                    //Attribute Label: Work Hours - Measure
+                    scatterplot.append("text")
+                        .attr("transform", "translate(313,604)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 14)
+                        .text("= < 8.5 hours");
+
+                    //Attribute Label: Work Hours - Measure
+                    scatterplot.append("text")
+                        .attr("transform", "translate(313,634)")
+                        .style("text-anchor", "middle")
+                        .attr("font-size", 14)
+                        .text("= > 8.5 hours");
+
+                    //Attribute Label: Work Hours - Color
+                    scatterplot.append("circle")
+                        .attr("cx", "264")
+                        .attr("cy", "630")
+                        .attr("r", "4")
+                        .attr("fill", "red")
+
+                    //Attribute Label: Work Hours - Color
+                    scatterplot.append("circle")
+                        .attr("cx", "145")
+                        .attr("cy", "600")
+                        .attr("r", "4")
+                        .attr("fill", "Green")
+                    
+                    //Attribute Label: Work Hours - Color
+                    scatterplot.append("circle")
+                        .attr("cx", "145")
+                        .attr("cy", "630")
+                        .attr("r", "4")
+                        .attr("fill", "Yellow")
+
+                    //Attribute Label: Work Hours - Color
+                    scatterplot.append("circle")
+                        .attr("cx", "264")
+                        .attr("cy", "600")
+                        .attr("r", "4")
+                        .attr("fill", "Orange")
+
+                    //Canvas Border Edge 1
+                    scatterplot.append("line")
+                        .attr("x1", "-70")
+                        .attr("x2", "-70")
+                        .attr("y1","-30")
+                        .attr("y2", "749")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+
+                    //Canvas Border Edge 2
+                    scatterplot.append("line")
+                        .attr("x1", "-70")
+                        .attr("x2", "1125")
+                        .attr("y1","-30")
+                        .attr("y2", "-30")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+                    
+                    //Canvas Border Edge 3
+                    scatterplot.append("line")
+                        .attr("x1", "1125")
+                        .attr("x2", "1125")
+                        .attr("y1","-30")
+                        .attr("y2", "749")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+
+                    //Canvas Border Edge 4
+                    scatterplot.append("line")
+                        .attr("x1", "-70")
+                        .attr("x2", "1125")
+                        .attr("y1","749")
+                        .attr("y2", "749")
+                        .attr("stroke-width", 1)
+                        .attr("stroke","black")
+
+                    //Opacity Note
+                    scatterplot.append("text")
+                        .attr("transform", "translate(875,740)")
+                        .style("text-anchor", "middle")
+                        .attr("font-style", "italic")
+                        .attr("font-size", 14)
+                        .text("*Note: Opacity increases as disposable income increases relative to the United States");
+            });
+        </script>
+    </body>
+</html>
