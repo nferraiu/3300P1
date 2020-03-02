@@ -3,12 +3,11 @@
         <script src="https://d3js.org/d3.v5.min.js"></script>
     </head>
     <body>
-        <svg width="400" height="400" id="visualization3"></svg>
+        <svg width="700" height="700" id="visualization3"></svg>
         <div id="legend"></div>
         <script>
             vis3 = d3.select("svg#visualization3");
             d3.csv("BetterLifeIndex.csv").then(function(data) {
-                console.log(data);
                 life_satisfaction_men = [];
                 life_satisfaction_women = [];
                 education_men = [];
@@ -39,6 +38,7 @@
                         }
                     });
                 }
+
                 if (life_satisfaction_men.length > life_satisfaction_women.length) {
                     checkCountries(life_satisfaction_men, life_satisfaction_women);
                 } else {
@@ -56,25 +56,11 @@
                     checkCountries(life_satisfaction_men, education_men);
                     checkCountries(life_satisfaction_women, education_women);
                 }
-
-                console.log("life satisfaction men");
-                console.log(life_satisfaction_men);
-                console.log("life satisfaction women");
-                console.log(life_satisfaction_women);
-                console.log("ed men");
-                console.log(education_men);
-                console.log("ed women");
-                console.log(education_women);
                 
                 life_men_extent = d3.extent(life_satisfaction_men, d => d["Value"]);
                 life_women_extent = d3.extent(life_satisfaction_women, d => d["Value"]);
                 edu_men_extent = d3.extent(education_men, d => d["Value"]);
                 edu_women_extent = d3.extent(education_women, d => d["Value"]);
-
-                console.log(life_men_extent);
-                console.log(life_women_extent);
-                console.log(edu_men_extent);
-                console.log(edu_women_extent);
 
                 var life_min; 
                 var life_max;
@@ -101,19 +87,14 @@
                     edu_max = Number(edu_women_extent[1]);
                 }
 
-                console.log(life_min);
-                console.log(life_max);
-                console.log(edu_min);
-                console.log(edu_max);
-
-                const x_scale = d3.scaleLinear().domain([edu_min-10, edu_max+10]).range([0,300]);
-                const y_scale = d3.scaleLinear().domain([life_min-1, life_max+1]).range([300,0]);
+                const x_scale = d3.scaleLinear().domain([edu_min, edu_max]).range([0,600]);
+                const y_scale = d3.scaleLinear().domain([life_min-0.05, life_max]).range([600,0]);
 
                 let left_axis = d3.axisLeft(y_scale);
-                let left_grid = d3.axisLeft(y_scale).tickSize(-310).tickFormat("");
+                let left_grid = d3.axisLeft(y_scale).tickSize(-610).tickFormat("");
 
                 let bottom_axis = d3.axisBottom(x_scale);
-                let bottom_grid = d3.axisBottom(x_scale).tickSize(-310).tickFormat("");
+                let bottom_grid = d3.axisBottom(x_scale).tickSize(-610).tickFormat("");
 
                 vis3.append("g")
                     .attr("transform","translate(50,50)")
@@ -122,10 +103,10 @@
                     .attr("transform","translate(50,50)")
                     .call(left_grid);
                 vis3.append("g")
-                    .attr("transform","translate(50,350)")
+                    .attr("transform","translate(50,650)")
                     .call(bottom_axis);
                 vis3.append("g")
-                    .attr("transform","translate(50,350)")
+                    .attr("transform","translate(50,650)")
                     .call(bottom_grid);
 
                 life_satisfaction_men.forEach(l => {
@@ -135,27 +116,8 @@
                                 .attr("id", "men")
                                 .attr("cx", x_scale(e["Value"])+50)
                                 .attr("cy", y_scale(l["Value"])+50)
-                                .attr("r", 5)
-                                .attr("fill", "darkgreen")
-                                .on("mouseover", function() {
-                                    d3.select(this)
-                                        .transition().duration(200)
-                                        .attr("stroke", "orange")
-                                        .attr("stroke-width", 2);
-                                    vis3.append("text")
-                                        .attr("x", 300)
-                                        .attr("y", 30)
-                                        .attr("font-size", 14)
-                                        .attr("id", "country_label")
-                                        .text(e["Country"]);
-                                })
-                                .on("mouseout", function() {
-                                    d3.select(this)
-                                        .transition().duration(200)
-                                        .attr("stroke", "")
-                                        .attr("stroke-width", 0);
-                                    d3.select("#country_label").remove();
-                                });
+                                .attr("r", 11)
+                                .attr("fill", "darkBlue");
                         }
                     });
                 });
@@ -167,89 +129,85 @@
                                 .attr("id", "women")
                                 .attr("cx", x_scale(e["Value"])+50)
                                 .attr("cy", y_scale(l["Value"])+50)
-                                .attr("r", 5)
-                                .attr("fill", "orange")
-                                .on("mouseover", function() {
-                                    d3.select(this)
-                                        .transition().duration(200)
-                                        .attr("stroke", "darkgreen")
-                                        .attr("stroke-width", 2);
-                                    vis3.append("text")
-                                        .attr("x", 300)
-                                        .attr("y", 30)
-                                        .attr("font-size", 14)
-                                        .attr("id", "country_label")
-                                        .text(e["Country"]);
-                                })
-                                .on("mouseout", function() {
-                                    d3.select(this)
-                                        .transition().duration(200)
-                                        .attr("stroke", "")
-                                        .attr("stroke-width", 0);
-                                    d3.select("#country_label").remove();
-                                });
+                                .attr("r", 11)
+                                .attr("fill", "darkRed");
                         }
                     });
                 });
 
-                d3.select("#legend")
-                    .append("span")
-                    .style("color", "darkgreen")
-                    .text("Men    ")
-                    .on("mouseover", function() {
-                            d3.selectAll("#women").each( function () {
-                                let cir = d3.select(this);
-                                cir.attr("visibility", "hidden");
-                            });
-                            d3.selectAll("#men").each( function () {
-                                let cir = d3.select(this);
-                                cir.attr("visibility", "");
-                            });
-                    });
+                life_satisfaction_men.forEach(l => {
+                    education_men.forEach(e => {
+                        if (l["Country"] == e["Country"]) {
+                            vis3.append("text")
+                                .attr("id", "country_label")
+                                .attr("x", x_scale(e["Value"])+50)
+                                .attr("y", y_scale(l["Value"])+50+3)
+                                .attr("font-size", 8)
+                                .attr("font-family", "Arial, Helvetica, sans-serif")
+                                .attr("id", "country_label")
+                                .style("text-anchor", "middle")
+                                .style("fill", "white")
+                                .text(e["LOCATION"]);
 
-                d3.select("#legend")
-                    .append("span")
-                    .style("color", "orange")
-                    .text("Women    ")
-                    .on("mouseover", function() {
-                            d3.selectAll("#men").each( function() {
-                                let cir = d3.select(this);
-                                cir.attr("visibility", "hidden");
-                            });
-                            d3.selectAll("#women").each( function() {
-                                let cir = d3.select(this);
-                                cir.attr("visibility", "");
-                            });
+                        }
                     });
+                });
 
-                d3.select("#legend")
-                    .append("span")
-                    .text("Clear")
-                    .on("mouseover", function() {
-                        d3.selectAll("#women").each( function() {
-                            let cir = d3.select(this);
-                            cir.attr("visibility", "");
-                        });
-                        d3.selectAll("#men").each( function() {
-                            let cir = d3.select(this);
-                            cir.attr("visibility", "");
-                        });
-                        
+                life_satisfaction_women.forEach(l => {
+                    education_women.forEach(e => {
+                        if (l["Country"] == e["Country"]) {
+                            vis3.append("text")
+                                .attr("id", "country_label")
+                                .attr("x", x_scale(e["Value"])+50)
+                                .attr("y", y_scale(l["Value"])+50+3)
+                                .attr("font-size", 8)
+                                .attr("id", "country_label")
+                                .style("text-anchor", "middle")
+                                .style("fill", "white")
+                                .attr("font-family", "Arial, Helvetica, sans-serif")
+                                .text(e["LOCATION"]);
+                        }
                     });
-
+                });
+                console.log(life_satisfaction_men);
                 vis3.append("text")
-                    .attr("transform", "translate(200,385)")
+                    .attr("transform", "translate(350,685)")
                     .style("text-anchor", "middle")
+                    .attr("font-family", "Arial, Helvetica, sans-serif")
                     .attr("font-size", 14)
                     .text("Educational Attainment");
 
                 vis3.append("text")
-                    .attr("transform", "translate(20,200)rotate(-90)")
+                    .attr("transform", "translate(20,350)rotate(-90)")
                     .style("text-anchor", "middle")
+                    .attr("font-family", "Arial, Helvetica, sans-serif")
                     .attr("font-size", 14)
                     .text("Life Satisfaction Score");
+                
+                vis3.append("text")
+                    .attr("transform", "translate(50,700)")
+                    .style("text-anchor", "middle")
+                    .attr("font-family", "Arial, Helvetica, sans-serif")
+                    .attr("font-size", 14)
+                    .style("fill", "darkBlue")
+                    .text("Men");
+                
+                vis3.append("text")
+                    .attr("transform", "translate(100,700)")
+                    .style("text-anchor", "middle")
+                    .attr("font-family", "Arial, Helvetica, sans-serif")
+                    .attr("font-size", 14)
+                    .style("fill", "darkRed")
+                    .text("Women");
+                
+                vis3.append("text")
+                    .attr("transform", "translate(350,30)")
+                    .style("text-anchor", "middle")
+                    .attr("font-family", "Arial, Helvetica, sans-serif")
+                    .attr("font-size", 14)
+                    .text("Life Satisfaction Score vs. Educational Attainment");
             });
-
+            
         </script>
 
     </body>
