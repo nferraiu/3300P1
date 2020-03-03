@@ -4,7 +4,8 @@
     </head>
     <body>
       <div>
-            <svg height = "1200" width = "700" id = "barGraph1">
+            <svg height = "1125" width = "700" id = "barGraph1">
+            <p style="font-family:Arial, Helvetica, sans-serif"> *Life Satisfaction score is a weighted sum of how people rate different aspects of their life, resulting in a scale from 0 to 10.</p>
             <script>
                     d3.csv("betterlifeindex.csv").then(function(data) {
                       var lifeSatisfaction = [];
@@ -76,9 +77,6 @@
                          .attr("transform", "translate(50,50)")
                          .call(axisLeft);
 
-
-                      console.log(lifeSatisfactionSorted);
-
                       for (var i = 0; i < lifeSatisfactionSorted.length; i++) {
                        var rect = svg.append("rect")
                                        .attr("width",xScale(lifeSatisfactionSorted[i][1]))
@@ -112,7 +110,7 @@
                                       .attr("font-family", "sans-serif")
                                       .attr("font-size", "20px")
                                       .attr("font-weight", "semi-bold")
-                                      .text("Average Life Satisfaction Score");
+                                      .text("Average Life Satisfaction Score*");
 
                       var yAxisLabel = svg.append("text")
                                       .attr("text-anchor", "end")
@@ -335,8 +333,8 @@
                     </script>
             </p>
         </div>
-        
-        
+
+
 
 <svg height = "800" width = "1500" id = scatterplot>
         <text id = "label" x = 775 y ="15" text-anchor = "end"></text>
@@ -798,7 +796,7 @@
                     .style("text-anchor", "middle")
                     .attr("font-family", "Arial, Helvetica, sans-serif")
                     .attr("font-size", 14)
-                    .text("Educational Attainment");
+                    .text("Educational Attainment*");
 
                 vis3.append("text")
                     .attr("transform", "translate(20,350)rotate(-90)")
@@ -864,7 +862,7 @@
             });
 
         </script>
-        <p style="font-family:Arial, Helvetica, sans-serif"> Educational Attainment is the percentage of adults between the ages of 24 and 65 that have obtained at least a secondary degree. Life Satisfactin score is a weighted sum of how people rate different aspects of their life, resulting in a scale from 0 to 10. </p>
+        <p style="font-family:Arial, Helvetica, sans-serif">  *Educational Attainment is the percentage of adults between the ages of 24 and 65 that have obtained at least a secondary degree.</p>
     </br>
     </body>
 </html>
