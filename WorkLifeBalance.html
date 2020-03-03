@@ -4,9 +4,12 @@
     </head>
     <body style="background-color:#fffded">
       <div align="center">
-            <h1 align="center" style="font-size:6em; font-family: arial">Worldwide Work/Life Balance</h1>
+            <h1 align="center" style="font-size:72; font-family: arial; text-decoration: underline;">Worldwide Work/Life Balance</h1>
+            <p align="center" style="font-size:20"> 
+                In today's day in age, the standards for working above and beyond one's expectations are higher than ever before. Competition is increasing and the people of the world are doing everything they can to be on top. However, at what cost does this success come with? At what point do we hit diminishing returns where our work is drowning out the activities that generate our satisfaction? In this project, we investigate the relationship between major countries' work-life balances around the world hoping to genereate insight surrounding these questions.   
+            </p>
             <svg height = "1125" width = "700" id = "barGraph1"></svg>
-            <p style="font-family:Arial, Helvetica, sans-serif">*Life Satisfaction score is a weighted sum of how people rate different aspects of their life, resulting in a scale from 0 to 10.</p>
+            <p style="font-family:Arial, Helvetica, sans-serif; font-style: italic;">*Note: Life Satisfaction score is a weighted sum of how people rate different aspects of their life, resulting in a scale from 0 to 10.</p>
             <script>
                     d3.csv("betterlifeindex.csv").then(function(data) {
                       var lifeSatisfaction = [];
@@ -256,7 +259,7 @@
 
                 //x-axis label
                 scatterplot.append("text")
-                    .attr("transform", "translate(525,740)")
+                    .attr("transform", "translate(500,740)")
                     .style("text-anchor", "middle")
                     .attr("font-size", 20)
                     .attr("font-weight", "bold")
@@ -429,11 +432,11 @@
 
                 //Opacity Note
                 scatterplot.append("text")
-                    .attr("transform", "translate(875,740)")
+                    .attr("transform", "translate(860,740)")
                     .style("text-anchor", "middle")
                     .attr("font-style", "italic")
                     .attr("font-size", 14)
-                    .text("*Note: Opacity increases as disposable income increases relative to the United States");
+                    .text("*Note: Opacity and Size increase as disposable income and leisure time increase respectively");
 
         });
     </script>
