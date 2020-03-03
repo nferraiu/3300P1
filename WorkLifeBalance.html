@@ -240,11 +240,19 @@
 
                 //y-axis label
                 scatterplot.append("text")
-                    .attr("transform", "translate(-40,360)rotate(-90)")
+                    .attr("transform", "translate(-50,360)rotate(-90)")
                     .style("text-anchor", "middle")
                     .attr("font-size", 20)
                     .attr("font-weight", "bold")
                     .text("Life Satisfaction Score");
+
+                //y-axis label
+                scatterplot.append("text")
+                    .attr("transform", "translate(-33,360)rotate(-90)")
+                    .style("text-anchor", "middle")
+                    .attr("font-size", 14)
+                    .attr("font-style", "italic")
+                    .text("Scale: 0-10");
 
                 //x-axis label
                 scatterplot.append("text")
