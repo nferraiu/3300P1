@@ -449,7 +449,7 @@
                                 .attr("cx", x_scale(e["Value"])+50)
                                 .attr("cy", y_scale(l["Value"])+50)
                                 .attr("r", 11)
-                                .attr("fill", "darkBlue");
+                                .attr("fill", "CornflowerBlue");
                         }
                     });
                 });
@@ -462,7 +462,7 @@
                                 .attr("cx", x_scale(e["Value"])+50)
                                 .attr("cy", y_scale(l["Value"])+50)
                                 .attr("r", 11)
-                                .attr("fill", "darkRed");
+                                .attr("fill", "pink");
                         }
                     });
                 });
@@ -478,7 +478,7 @@
                                 .attr("font-family", "Arial, Helvetica, sans-serif")
                                 .attr("id", "country_label")
                                 .style("text-anchor", "middle")
-                                .style("fill", "white")
+                                .style("fill", "black")
                                 .text(e["LOCATION"]);
 
                         }
@@ -495,7 +495,7 @@
                                 .attr("font-size", 8)
                                 .attr("id", "country_label")
                                 .style("text-anchor", "middle")
-                                .style("fill", "white")
+                                .style("fill", "black")
                                 .attr("font-family", "Arial, Helvetica, sans-serif")
                                 .text(e["LOCATION"]);
                         }
@@ -517,30 +517,63 @@
                     .text("Life Satisfaction Score");
 
                 vis3.append("text")
-                    .attr("transform", "translate(50,700)")
+                    .attr("transform", "translate(50,695)")
                     .style("text-anchor", "middle")
                     .attr("font-family", "Arial, Helvetica, sans-serif")
                     .attr("font-size", 14)
-                    .style("fill", "darkBlue")
+                    .style("fill", "CornflowerBlue")
                     .text("Men");
 
                 vis3.append("text")
-                    .attr("transform", "translate(100,700)")
+                    .attr("transform", "translate(100,695)")
                     .style("text-anchor", "middle")
                     .attr("font-family", "Arial, Helvetica, sans-serif")
                     .attr("font-size", 14)
-                    .style("fill", "darkRed")
+                    .style("fill", "pink")
                     .text("Women");
 
                 vis3.append("text")
                     .attr("transform", "translate(350,30)")
                     .style("text-anchor", "middle")
                     .attr("font-family", "Arial, Helvetica, sans-serif")
-                    .attr("font-size", 14)
+                    .attr("font-size", 20)
                     .text("Life Satisfaction Score vs. Educational Attainment");
+
+                vis3.append("line")
+                    .attr("x1", 0)
+                    .attr("x2", 700)
+                    .attr("y1", 0)
+                    .attr("y2", 0)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2);
+
+                vis3.append("line")
+                    .attr("x1", 0)
+                    .attr("x2", 700)
+                    .attr("y1", 700)
+                    .attr("y2", 700)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2);
+
+                vis3.append("line")
+                    .attr("x1", 0)
+                    .attr("x2", 0)
+                    .attr("y1", 0)
+                    .attr("y2", 700)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2);
+
+                vis3.append("line")
+                    .attr("x1", 700)
+                    .attr("x2", 700)
+                    .attr("y1", 0)
+                    .attr("y2", 700)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2);
             });
 
         </script>
+        
 
 <svg height = "800" width = "1500" id = scatterplot>
         <text id = "label" x = 775 y ="15" text-anchor = "end"></text>
