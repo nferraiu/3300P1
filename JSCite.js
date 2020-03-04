@@ -24,3 +24,7 @@
                     .attr("x","143")
                     .attr("y","595")
                     .style("fill", "url(#linear-gradient)");
+                
+                //d3 source we used to generate our scales and plots
+                <script src="https://d3js.org/d3.v5.min.js"></script>
+        
